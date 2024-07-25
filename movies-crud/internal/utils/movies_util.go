@@ -2,6 +2,8 @@ package utils
 
 import (
 	"math/rand"
+	"movies-crud/internal/models"
+	"movies-crud/pkg/log"
 	"strconv"
 	"sync"
 	"time"
@@ -43,4 +45,29 @@ func GenerateUID() string {
 		b[i] = letterRunes[rand.Intn(len(letterRunes))]
 	}
 	return string(b)
+}
+
+func GetIndex(movies []models.Movie, movieID int) int {
+	index := -1
+	start := 0
+	end := len(movies) - 1
+
+	for start <= end {
+		mid := start + (end-start)/2
+		curID, err := strconv.Atoi(movies[mid].ID)
+		if err != nil {
+			log.ErrorLogger.Printf("Invalid movie ID in storage: %v", movies[mid].ID)
+			return index
+		}
+
+		if curID == movieID {
+			index = mid
+			break
+		} else if curID > movieID {
+			end = mid - 1
+		} else {
+			start = mid + 1
+		}
+	}
+	return index
 }
