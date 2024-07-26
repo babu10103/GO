@@ -1,22 +1,36 @@
 package config
 
 import (
+	"fmt"
+	"net/url"
+
+	"github.com/babu10103/GO/go_bookstore/pkg/log"
 	"github.com/jinzhu/gorm"
-	"github.com/jinzhu/gorm/dialects/mysql"
+	_ "github.com/jinzhu/gorm/dialects/mysql"
 )
 
+const DB_HOST = "localhost"
+const DB_USERNAME = "root"
+const DB_PASSWORD = "password"
+const DB_NAME = "bookstore"
+const DB_PORT = "3306"
+
 var (
-	db *gorm.DB
+	db      *gorm.DB
+	dialect = "mysql"
 )
 
 func Connect() {
-	d, err := gorm.Open("mysql", "username:password123@mytable?charset=utf8&parseTime=True&loc=Local")
+	encodedPassword := url.QueryEscape(DB_PASSWORD)
+	connStr := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8&parseTime=True&loc=Local",
+		DB_USERNAME, encodedPassword, DB_HOST, DB_PORT, DB_NAME)
+	dbConnObj, err := gorm.Open(dialect, connStr)
 
 	if err != nil {
-		panic(err)
+		log.ErrorLogger.Printf("Error while connecting to db: %v\n", err)
+		return
 	}
-
-	db = d
+	db = dbConnObj
 }
 
 func GetDB() *gorm.DB {
