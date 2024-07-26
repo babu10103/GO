@@ -9,9 +9,9 @@ import (
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 )
 
-const DB_HOST = "10.125.56.126"
+const DB_HOST = "xx.xx.xx.xx"
 const DB_USERNAME = "root"
-const DB_PASSWORD = "Babu@103"
+const DB_PASSWORD = "xxxxxx"
 const DB_NAME = "bookstore"
 const DB_PORT = "3306"
 
