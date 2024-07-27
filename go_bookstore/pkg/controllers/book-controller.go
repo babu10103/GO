@@ -59,6 +59,7 @@ func DeleteBook(w http.ResponseWriter, r *http.Request) {
 	}
 
 	deletedBook := models.DeleteBook(id)
+	log.InfoLogger.Printf("Book Deleted Successfully. name: %s, author: %s, publication: %s\n", deletedBook.Name, deletedBook.Author, deletedBook.Publication)
 	res, _ := json.Marshal(deletedBook)
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)

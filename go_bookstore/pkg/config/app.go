@@ -2,18 +2,12 @@ package config
 
 import (
 	"fmt"
-	// "net/url"
+	"os"
 
 	"github.com/babu10103/GO/go_bookstore/pkg/log"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 )
-
-const DB_HOST = "xx.xx.xx.xx"
-const DB_USERNAME = "root"
-const DB_PASSWORD = "xxxxxx"
-const DB_NAME = "bookstore"
-const DB_PORT = "3306"
 
 var (
 	db      *gorm.DB
@@ -21,17 +15,23 @@ var (
 )
 
 func Connect() {
-	// encodedPassword := url.QueryEscape(DB_PASSWORD)
+	DB_HOST := os.Getenv("DB_HOST")
+	DB_USERNAME := os.Getenv("DB_USER")
+	DB_PASSWORD := os.Getenv("DB_PASSWORD")
+	DB_PORT := os.Getenv("DB_PORT")
+	DB_NAME := os.Getenv("DB_NAME")
+
 	connStr := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8&parseTime=True&loc=Local",
 		DB_USERNAME, DB_PASSWORD, DB_HOST, DB_PORT, DB_NAME)
-	log.InfoLogger.Println(connStr)
-	dbConnObj, err := gorm.Open(dialect, connStr)
-
+	var err error
+	db, err = gorm.Open(dialect, connStr)
 	if err != nil {
 		log.ErrorLogger.Printf("Error while connecting to db: %v\n", err)
+		log.ErrorLogger.Printf("connStr: %s\n", connStr)
 		return
 	}
-	db = dbConnObj
+
+	log.InfoLogger.Println("connected to db...")
 }
 
 func GetDB() *gorm.DB {
