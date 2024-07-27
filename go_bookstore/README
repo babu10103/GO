@@ -1,0 +1,11 @@
+
+# Using .env file
+Create `.env` file with below properties.
+
+MYSQL_ROOT_PASSWORD=<mysql_db_root_password>
+MYSQL_DATABASE=<database_name>
+MYSQL_USER=<user>
+MYSQL_PASSWORD=<password>
+APP_PORT=<app_port>
+MYSQL_PORT=<mysql_port>
+
