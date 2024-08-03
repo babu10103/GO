@@ -16,9 +16,7 @@ FROM ubuntu:22.04
 
 WORKDIR /root/
 
-COPY --from=builder /app/dist/main /app/wait-for-it.sh .
-
-RUN ls -l
+COPY --from=builder /app/dist/main .
 
 EXPOSE 9010
 

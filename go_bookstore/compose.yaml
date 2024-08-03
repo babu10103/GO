@@ -15,7 +15,7 @@ services:
     networks:
       - bookstore-network
 
-  web:
+  api:
     build:
       context: .
       dockerfile: Dockerfile
