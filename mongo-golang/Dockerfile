@@ -9,16 +9,15 @@ RUN go mod download
 
 COPY . .
 
-RUN go build -o dist/main cmd/main/main.go
+RUN go build -o dist/main main.go
 
-# runtime
+# runner
 FROM ubuntu:22.04
 
 WORKDIR /root/
 
 COPY --from=builder /app/dist/main .
 
-EXPOSE 9010
+EXPOSE 9000
 
 CMD ["./main"]
-
