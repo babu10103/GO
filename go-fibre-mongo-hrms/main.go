@@ -8,7 +8,7 @@ import (
 	"time"
 
 	"github.com/gofiber/fiber/v2"
-	"github.com/joho/godotenv"
+	// "github.com/joho/godotenv"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -49,10 +49,10 @@ func GenerateObjectIdFromHex(hex string) (primitive.ObjectID, error) {
 }
 
 func Connect() (MongoInstance, error) {
-	err := godotenv.Load(".env")
-	if err != nil {
-		return MongoInstance{nil, nil}, fmt.Errorf("failed to load .env file")
-	}
+	// err := godotenv.Load(".env")
+	// if err != nil {
+	// 	return MongoInstance{nil, nil}, fmt.Errorf("failed to load .env file")
+	// }
 	dbHost := os.Getenv("DB_HOST")
 	dbUser := os.Getenv("DB_USER")
 	dbPwd := os.Getenv("DB_PWD")
