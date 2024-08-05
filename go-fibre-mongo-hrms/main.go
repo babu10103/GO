@@ -21,7 +21,7 @@ type MongoInstance struct {
 }
 
 type Employee struct {
-	ID     primitive.ObjectID `json:"id,omitempty" bson"_id, omitempty"`
+	ID     primitive.ObjectID `json:"id,omitempty" bson:"_id,omitempty"`
 	Name   string             `json:"name"`
 	Age    float64            `json:"age"`
 	Salary float64            `json:"salary"`
@@ -128,7 +128,7 @@ func main() {
 			})
 		}
 
-		// Check if the employee exists
+		// Find the employee
 		var employee Employee
 		err = collection.FindOne(context.Background(), bson.M{"_id": oid}).Decode(&employee)
 		if err != nil {
@@ -138,15 +138,13 @@ func main() {
 					Message: "Employee for ID " + id + " not found",
 				})
 			}
-			// Log the error for debugging
-			log.Printf("Error finding employee: %v", err)
+			log.Printf("Error finding employee: %v, ID: %s", err, id)
 			return c.Status(500).JSON(Response{
 				Status:  "Failed",
 				Message: "Error finding employee: " + err.Error(),
 			})
 		}
 
-		// Return the employee data
 		return c.JSON(employee)
 	})
 
@@ -160,22 +158,33 @@ func main() {
 			})
 		}
 
-		employee.ID = GenerateObjectId()
+		// Insert employee without setting ID; MongoDB will generate it
 		_, err := mg.DB.Collection("employees").InsertOne(context.Background(), employee)
 
 		if err != nil {
-			return c.Status(400).JSON(Response{
+			return c.Status(500).JSON(Response{
 				Status:  "Failed",
 				Message: "Failed to create employee: " + err.Error(),
 			})
 		}
+
+		// Retrieve the inserted document to return the ID
+		result := mg.DB.Collection("employees").FindOne(context.Background(), bson.M{"name": employee.Name})
+		var insertedEmployee Employee
+		if err := result.Decode(&insertedEmployee); err != nil {
+			return c.Status(500).JSON(Response{
+				Status:  "Failed",
+				Message: "Failed to retrieve employee ID: " + err.Error(),
+			})
+		}
+
 		return c.JSON(Response{
-			Id:      employee.ID.Hex(),
+			Id:      insertedEmployee.ID.Hex(),
 			Status:  "Successful",
 			Message: "Employee created successfully",
 		})
-
 	})
+
 	app.Put("/employee/:id", func(c *fiber.Ctx) error {
 		id := c.Params("id")
 		var employee Employee
