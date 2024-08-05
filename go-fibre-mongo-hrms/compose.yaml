@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  mongodb:
+    image: mongo
+    container_name: mongodb
+    hostname: ${DB_HOST}
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${DB_USER}
+      MONGO_INITDB_ROOT_PASSWORD: ${DB_PWD}
+    volumes:
+      - mongodb-data:/data/db
+    networks:
+      - users-network
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: go-users-api
+    environment:
+      DB_HOST: ${DB_HOST}
+      DB_USER: ${DB_USER}
+      DB_PWD: ${DB_PWD}
+      DB_NAME: ${DB_NAME}
+      APP_PORT: ${APP_PORT}
+    ports:
+      - "${APP_PORT}:${APP_PORT}"
+    networks:
+      - users-network
+    depends_on:
+      - mongodb
+
+volumes:
+  mongodb-data:
+
+networks:
+  users-network:
+    driver: bridge
